@@ -1,30 +1,41 @@
 " Vim syntax file
 " Language: templ
-runtime! syntax/html.vim
+
+" syn region templCss start=/{% css .* %}/ keepend end=/{% endcss %}/ contains=cssTagName,cssAttributeSelector,cssClassName,cssIdentifier,cssAtRule,cssAttrRegion,css.*Prop,cssComment,cssValue.*,cssColor,cssURL,cssImportant,cssCustomProp,cssError,cssStringQ,cssStringQQ,cssFunction,cssUnicodeEscape,cssVendor,cssDefinition,cssHacks,cssNoise
+
+if exists("b:current_syntax")
+  finish
+endif
+
+
+
+
+
+ru! syntax/css.vim
+ru! syntax/html.vim
 unlet b:current_syntax
 
-" Include Go highlighting in @Go cluster
-syn include @Go syntax/go.vim
+syn include @go syntax/go.vim
 
-" templ keywords
-syn cluster templGroup contains=templStart,templEnd,templEndBlocks,templCall
-syn keyword templStart contained templ
-syn keyword templEnd contained endtempl
-syn keyword templCall contained call
-syn keyword templEndBlocks contained endif endfor
+syn cluster templBlocks add=templExpression,templStatement,templTemplate
 
-hi def link templStart Statement
-hi def link templCall Statement
-hi def link templEnd Statement
-hi def link templEndBlocks Statement
+syn cluster templKeywords add=templConditional,templRepeat,templType
+syn keyword templConditional contained if endif switch endswitch case endcase
+syn keyword templRepeat contained for endfor
+syn keyword templType contained templ endtempl css endcss
 
-" templ code blocks
-syn region templStatementBlock matchgroup=templTag start="{%" keepend end="%}" contains=@templGroup,@Go
-syn region templExpresssionBlock matchgroup=templTag start="{%=" keepend end="%}" contains=@Go
+hi def link templConditional Conditional
+hi def link templRepeat Repeat
+hi def link templType Type
 
-" Allow templ expression within html
-syn cluster htmlPreproc add=templExpressionBlock
+syn region templHtml start=/{% templ .* %}/ end="{% endtempl %}" keepend contains=htmlTag,htmlEndTag,htmlSpecialChar,htmlPreProc,htmlComment,htmlLink,javaScript,@htmlPreproc
+syn region templExpression start="{%=" end="%}" keepend contains=@go display containedin=ALLBUT,@templBlocks
+syn region templStatement start="{%" end="%}" keepend contains=@go,@templKeywords display containedin=ALLBUT,@templBlocks
+syn region templTemplate start="{%!" end="%}" keepend contains=@go display containedin=ALLBUT,@templBlocks
+syn region templCss start=/{% css .* %}/ end="{% endcss %}" keepend contains=cssTagName,cssAttributeSelector,cssClassName,cssIdentifier,cssAtRule,cssAttrRegion,css.*Prop,cssComment,cssValue.*,cssColor,cssURL,cssImportant,cssCustomProp,cssError,cssStringQ,cssStringQQ,cssFunction,cssUnicodeEscape,cssVendor,cssDefinition,cssHacks,cssNoise
+
+
+
+syn cluster htmlPreproc add=templExpression
 
 let b:current_syntax = "templ"
-
-
