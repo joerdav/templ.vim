@@ -31,18 +31,26 @@ syn match templReceiverDecl      /(\s*\zs\%(\%(\w\+\s\+\)\?\*\?\w\+\%(\[\%(\%(\[
 syn match templFunction          /\w\+/ nextgroup=templSimpleParams,templTypeParams contained skipwhite skipnl
 syn match templSimpleParams      /(\%(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goParamName,goType nextgroup=templTemplateBlock skipwhite skipnl
 syn match templTypeParams        /\[\%(\w\+\s\+\%(\~\?\%(\[]\)\?\w\%(\w\||\)\)*\%(,\s*\)\?\)\+\]/ nextgroup=templSimpleParams contained skipwhite skipnl
-syn region templTemplateBlock start="{" end="}" contains=@html,templCall,templFlow contained skipwhite skipnl
+syn region templTemplateBlock start="{" end="}" contains=@html,templCall,@templFlows contained skipwhite skipnl
 
 " @template()
 syn match templCall /@/ nextgroup=templFunction contained skipwhite skipnl
 
+
 " for ...
-syn match templFlow /for/ contained skipwhite skipnl nextgroup=templFlowBlock
-syn region templFlowBlock start=/.*{/ end="}" contained skipwhite skipnl contains=@html,templCall,templFlow
+syn cluster templFlows contains=templFlow,templSwitch
+syn match templFlow /\(for\|if\)/ contained skipwhite skipnl nextgroup=templFlowBlock
+syn match templSwitch /switch/ contained skipwhite skipnl nextgroup=templSwitchBlock
+syn keyword templSwitchKeyword case contained
+syn keyword templSwitchKeyword default contained
+syn region templSwitchBlock start=/.*{/ end="}" contained skipwhite skipnl contains=@html,templCall,@templFlows,templSwitchKeyword
+syn region templFlowBlock start=/.*{/ end="}" contained skipwhite skipnl contains=@html,templCall,@templFlows
 
 
 hi def link templTemplateDec Keyword
 hi def link templFlow Keyword
+hi def link templSwitch Keyword
+hi def link templSwitchKeyword Keyword
 hi def link templCall Special
 
 let b:current_syntax = "templ"
