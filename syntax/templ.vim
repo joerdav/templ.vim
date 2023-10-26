@@ -31,7 +31,7 @@ syn match templReceiverDecl      /(\s*\zs\%(\%(\w\+\s\+\)\?\*\?\w\+\%(\[\%(\%(\[
 syn match templFunction          /\w\+/ nextgroup=templSimpleParams,templTypeParams contained skipwhite skipnl
 syn match templSimpleParams      /(\%(\w\|\_s\|[*\.\[\],\{\}<>-]\)*)/ contained contains=goParamName,goType nextgroup=templTemplateBlock skipwhite skipnl
 syn match templTypeParams        /\[\%(\w\+\s\+\%(\~\?\%(\[]\)\?\w\%(\w\||\)\)*\%(,\s*\)\?\)\+\]/ nextgroup=templSimpleParams contained skipwhite skipnl
-syn region templTemplateBlock start="{" end="}" contains=@html,templCall,@templFlows contained skipwhite skipnl
+syn region templTemplateBlock start="{" end="}" contains=@html,templCall,@templFlows,templTemplateBlock contained skipwhite skipnl
 
 " @template()
 syn match templCall /@/ nextgroup=templFunction contained skipwhite skipnl
