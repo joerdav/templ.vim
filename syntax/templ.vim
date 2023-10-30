@@ -39,12 +39,11 @@ syn match templCall /@/ nextgroup=templFunction contained skipwhite skipnl
 
 " for ...
 syn cluster templFlows contains=templFlow,templSwitch
-syn match templFlow /\(for\|if\)/ contained skipwhite skipnl nextgroup=templFlowBlock
+syn match templFlow /\(for\|if\)/ contained skipwhite skipnl nextgroup=templTemplateBlock
 syn match templSwitch /switch/ contained skipwhite skipnl nextgroup=templSwitchBlock
 syn keyword templSwitchKeyword case contained
 syn keyword templSwitchKeyword default contained
-syn region templSwitchBlock start=/.*{/ end="}" contained skipwhite skipnl contains=@html,templCall,@templFlows,templSwitchKeyword
-syn region templFlowBlock start=/.*{/ end="}" contained skipwhite skipnl contains=@html,templCall,@templFlows
+syn region templSwitchBlock start=/.*{/ end="}" contained skipwhite skipnl contains=@html,templCall,@templFlows,templSwitchKeyword,templTemplateBlock
 
 
 hi def link templTemplateDec Keyword
